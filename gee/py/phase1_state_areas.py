@@ -6,11 +6,12 @@ MASK = ee.Image('projects/pyro-india-515605/assets/burnable_roy_30m')
 OUT = 'projects/pyro-india-515605/assets/burnable_roy_state_areas'
 BND = ee.FeatureCollection('projects/pyro-india-515605/assets/cepf_boundary').geometry()
 states = ee.FeatureCollection('FAO/GAUL/2015/level1').filter(ee.Filter.eq('ADM0_NAME', 'India')).filterBounds(BND)
+area = ee.Image.pixelArea().divide(1e6)
+bands = ee.Image.cat([area.updateMask(MASK.eq(k)).rename(f'c{k}') for k in range(1, 9)])
 def per_state(f):
     g = f.geometry().intersection(BND, 100)
-    img = ee.Image.pixelArea().divide(1e6).addBands(MASK.unmask(0).rename('cls'))
-    r = img.reduceRegion(ee.Reducer.sum().group(1, 'cls'), g, 30, maxPixels=1e12, tileScale=16)
-    return ee.Feature(None, {'state': f.get('ADM1_NAME'), 'groups': r.get('groups')})
+    r = bands.reduceRegion(ee.Reducer.sum(), g, 30, maxPixels=1e12, tileScale=16)
+    return ee.Feature(g.centroid(1000), r).set('state', f.get('ADM1_NAME'))
 if sys.argv[1] == 'start':
     t = ee.batch.Export.table.toAsset(states.map(per_state), 'burnable_roy_state_areas', OUT); t.start(); print('started', t.id)
 else:
@@ -20,7 +21,7 @@ else:
     print('state'.ljust(18), *[names[k][:12].rjust(13) for k in range(1, 9)], 'burnable'.rjust(10))
     tot = {k: 0 for k in range(1, 9)}
     for f in rows:
-        g = {int(x['cls']): x['sum'] for x in f['properties']['groups']}
+        g = {k: f['properties'].get(f'c{k}', 0) or 0 for k in range(1, 9)}
         print(f['properties']['state'].ljust(18), *[f'{g.get(k, 0):13.0f}' for k in range(1, 9)], f'{sum(g.get(k, 0) for k in range(1, 9)):10.0f}')
         for k in tot: tot[k] += g.get(k, 0)
     print('TOTAL'.ljust(18), *[f'{tot[k]:13.0f}' for k in range(1, 9)], f'{sum(tot.values()):10.0f}')
