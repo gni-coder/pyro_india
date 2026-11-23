@@ -4,7 +4,7 @@ Burn severity and pyrodiversity across the Western Ghats, 2001–present, and th
 Adapts Steel et al. (2021, *Proc. R. Soc. B*, "Quantifying pyrodiversity and its drivers"; code: https://github.com/zacksteel/pyrodiversity).
 
 ## Design decisions
-- **Area:** Western Ghats, WGEEP (Gadgil 2011) boundary. Not the Kasturirangan/HLWG or CEPF boundaries.
+- **Area:** Western Ghats, CEPF ecosystem-profile boundary (CEPF 2007; Conservation Biology Institute, Data Basin, CC BY 3.0; 6 polygons, ~109,000 km²). Chosen over the WGEEP (Gadgil 2011) boundary, whose shapefile is not publicly downloadable. A WGEEP-rule reconstruction (`gee/py/wgeep_reconstruct.py`, ~114,800 km², overlap with CEPF 0.68) is kept as a sensitivity check.
 - **Vegetation:** forest, all grassland types (shola, hill grasslands/savanna, northern lateritic plateau grasslands), plantations as a separate class.
 - **Period:** 2001–present.
 - **Fire perimeters:** derived from Landsat dNBR, confirmed and dated with MODIS MCD64A1 / active fire and VIIRS.
@@ -19,7 +19,7 @@ Adapts Steel et al. (2021, *Proc. R. Soc. B*, "Quantifying pyrodiversity and its
 - `data/` local data (gitignored).
 
 ## Setup
-1. Upload the WGEEP boundary shapefile (India Biodiversity Portal, login required) as a GEE asset and set its path in `gee/config.js`.
+1. Study boundary asset: `projects/pyro-india-515605/assets/cepf_boundary` (set in `gee/config.js`; created by `gee/py/upload_cepf.py` from the Data Basin shapefile, which is not stored in the repo). Cite: CEPF 2007, Conservation Biology Institute (Data Basin).
 2. R: `install.packages("renv"); renv::init()` then install terra, sf, FD, brms.
 
 ## Known risks
