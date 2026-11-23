@@ -10,6 +10,7 @@ Burnable classes (band 'burnable'):
   7 tree crops/orchards/tea/coconut/etc (150-163)
   8 degraded forest (106)
 Everything else (agriculture, water, settlement, barren, jhum, etc.) is not burnable.
+NOTE: the asset's pyramids are mean-aggregated; never reduce it at scales coarser than 60 m (class codes get blended).
 Usage: phase1_burnable_roy.py [export]"""
 import sys, ee
 ee.Initialize(project='pyro-india-515605')
@@ -39,8 +40,7 @@ def build():
 if __name__ == '__main__':
     img = build()
     if len(sys.argv) > 1 and sys.argv[1] == 'export':
-        # mode-resample to the 30 m Landsat grid
-        img30 = img.reduceResolution(ee.Reducer.mode(), maxPixels=64).reproject('EPSG:4326', None, 30)
-        t = ee.batch.Export.image.toAsset(img30, 'burnable_roy_30m', ASSET, region=GEOM, crs='EPSG:4326', scale=30,
+        # Roy raster is 60 m native (EPSG:32643); export on a 30 m grid with nearest-neighbour (never use pyramids/mean on class codes)
+        t = ee.batch.Export.image.toAsset(img, 'burnable_roy_30m', ASSET, region=GEOM, crs='EPSG:4326', scale=30,
                                            maxPixels=1e11, pyramidingPolicy={'.default': 'mode'})
         t.start(); print('started', t.id)
