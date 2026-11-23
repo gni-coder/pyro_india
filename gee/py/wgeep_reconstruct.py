@@ -19,7 +19,17 @@ def km2(m):
     return round(list(m.unmask(0).multiply(area).reduceRegion(ee.Reducer.sum(), ROI, 1000, maxPixels=1e10, tileScale=4).getInfo().values())[0])
 
 raw = L.select('hansen10').gte(0.1).And(rule)
-closed = raw.focalMax(CLOSE_KM, 'circle', 'pixels').focalMin(CLOSE_KM, 'circle', 'pixels')
+closed0 = raw.focalMax(CLOSE_KM, 'circle', 'pixels').focalMin(CLOSE_KM, 'circle', 'pixels')
+# Palghat gap: report leaves it out. Inside this box keep only high ground (>=500 m) so the low pass is cut.
+GAP_BOX = ee.Geometry.Rectangle([76.35, 10.55, 77.05, 11.0], geodesic=False)
+in_gap = ee.Image().byte().paint(ee.FeatureCollection([ee.Feature(GAP_BOX)]), 1).unmask(0).eq(1)
+closed1 = closed0.And(in_gap.Not().Or(elev.gte(500)))
+# Biligirirangan range: report includes it up to the Nilgiri Biosphere Reserve / Chamarajanagar east edge
+# (Kollegal-Satyamangalam highway). Approximated by this box (no official polygon available): forest cells >=150 m.
+BR_BOX = ee.Geometry.Rectangle([76.9, 11.45, 77.75, 12.3], geodesic=False)
+in_br = ee.Image().byte().paint(ee.FeatureCollection([ee.Feature(BR_BOX)]), 1).unmask(0).eq(1)
+br_add = in_br.And(L.select('hansen10').gte(0.1)).And(elev.gte(150))
+closed = closed1.Or(br_add)
 seed_fc = ee.FeatureCollection([ee.Feature(ee.Geometry.Point(p), {'n': n}) for n, p in SEEDS.items()])
 seed_in = closed.reduceRegions(seed_fc, ee.Reducer.first(), 1000).getInfo()['features']
 print('seeds inside mask:', {f['properties']['n']: f['properties'].get('first') for f in seed_in}, flush=True)
@@ -35,7 +45,7 @@ small_hole = bg.And(size.lt(HOLE_KM2)).unmask(0)
 final = conn.Or(small_hole).selfMask()
 if __name__ == '__main__':
     print('target', TARGET)
-    for n, m in (('raw (forest AND elevation rule)', raw), (f'closed {CLOSE_KM} km', closed), ('connected to main chain', conn), ('holes filled', final)):
+    for n, m in (('raw (forest AND elevation rule)', raw), (f'closed {CLOSE_KM} km', closed0), ('Palghat gap cut', closed1), ('+ Biligirirangan box', closed), ('connected to main chain', conn), ('holes filled', final)):
         print(n, km2(m), flush=True)
     if len(sys.argv) > 1 and sys.argv[1] == 'render':
         dem = ee.Image('USGS/SRTMGL1_003')
