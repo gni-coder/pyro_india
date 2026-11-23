@@ -1,0 +1,11 @@
+data/*
+!data/.gitkeep
+renv/library/
+renv/staging/
+.Rproj.user/
+.Rhistory
+.RData
+.Renviron
+*.tif
+*.gpkg
+.DS_Store
