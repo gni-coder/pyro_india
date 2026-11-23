@@ -1,0 +1,51 @@
+class,n,lat,lon
+forest,1,16.69573,73.43781
+forest,2,12.0809,77.86615
+forest,3,9.41291,76.924
+forest,4,14.68961,74.71845
+forest,5,12.49161,77.47592
+forest,6,12.25877,75.53556
+forest,7,9.62419,77.12666
+forest,8,10.03813,77.19133
+forest,9,9.34607,77.02209
+forest,10,13.58684,75.00843
+shola grassland,1,11.4007,76.71487
+shola grassland,2,11.47724,76.95202
+shola grassland,3,10.21492,77.43388
+shola grassland,4,11.23792,76.50143
+shola grassland,5,10.216,77.35303
+shola grassland,6,10.50705,76.65234
+shola grassland,7,10.24511,77.43711
+shola grassland,8,13.12223,75.26606
+shola grassland,9,11.2196,76.52083
+shola grassland,10,10.03059,77.12019
+hill grassland-savanna,1,12.11755,77.38753
+hill grassland-savanna,2,12.26416,75.57868
+hill grassland-savanna,3,10.44992,77.20104
+hill grassland-savanna,4,10.39818,76.67498
+hill grassland-savanna,5,12.89478,75.54203
+hill grassland-savanna,6,12.53258,75.7296
+hill grassland-savanna,7,12.94436,75.65845
+hill grassland-savanna,8,9.31158,76.96927
+hill grassland-savanna,9,12.72553,75.76625
+hill grassland-savanna,10,12.88615,75.68432
+lateritic grassland,1,16.50061,73.68036
+lateritic grassland,2,19.7076,73.57903
+lateritic grassland,3,18.65765,73.61676
+lateritic grassland,4,17.86641,73.17479
+lateritic grassland,5,18.30299,73.14353
+lateritic grassland,6,19.48015,73.69114
+lateritic grassland,7,15.77837,73.80864
+lateritic grassland,8,17.24873,73.50141
+lateritic grassland,9,18.00547,73.08316
+lateritic grassland,10,19.41762,73.39362
+forest plantation,1,11.77476,76.13384
+forest plantation,2,14.14847,74.91141
+forest plantation,3,11.46753,76.71271
+forest plantation,4,14.78016,74.85104
+forest plantation,5,11.50203,75.88159
+forest plantation,6,11.35974,76.62001
+forest plantation,7,9.74924,76.96496
+forest plantation,8,11.56994,76.07778
+forest plantation,9,9.48082,76.90998
+forest plantation,10,8.58179,77.12666
